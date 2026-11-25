@@ -1,0 +1,12 @@
+export { Navbar } from './Navbar';
+export { Hero } from './Hero';
+export { Problem } from './Problem';
+export { RoleSwitcher } from './RoleSwitcher';
+export { BentoGrid } from './BentoGrid';
+export { Architecture } from './Architecture';
+export { SchoolChakraHub } from './SchoolChakraHub';
+export { Pilot } from './Pilot';
+export { FAQ } from './FAQ';
+export { Footer } from './Footer';
+export { PilotModal } from './PilotModal';
+export { DemoCanvas } from '../demo-canvas';

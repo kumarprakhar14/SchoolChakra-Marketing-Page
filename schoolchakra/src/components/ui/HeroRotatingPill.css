@@ -1,0 +1,40 @@
+@keyframes heroWordSlideIn {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes heroWordSlideOut {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+.hero-word-slide-in {
+  animation: heroWordSlideIn 450ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.hero-word-slide-out {
+  animation: heroWordSlideOut 450ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-word-slide-in,
+  .hero-word-slide-out {
+    animation: none !important;
+    transform: none !important;
+    transition: opacity 200ms ease-in-out !important;
+  }
+}
