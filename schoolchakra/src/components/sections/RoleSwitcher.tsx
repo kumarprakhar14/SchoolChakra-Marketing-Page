@@ -41,7 +41,7 @@ interface RoleDefinition {
   preview: () => ReactNode;
 }
 
-function AdminPreview() {
+export function AdminPreview() {
   const { conflictAttempt, setConflictAttempt } = useUI();
 
   return (
@@ -142,7 +142,7 @@ function AdminPreview() {
   );
 }
 
-function TeacherPreview() {
+export function TeacherPreview() {
   const { theme } = useTheme();
   const { roleAttendanceState, setRoleAttendanceState } = useUI();
   const {
@@ -271,7 +271,7 @@ function TeacherPreview() {
   );
 }
 
-function AccountsPreview() {
+export function AccountsPreview() {
   const { upiProofStatus, setUpiProofStatus } = useUI();
 
   return (
@@ -317,7 +317,7 @@ function AccountsPreview() {
   );
 }
 
-function StudentPreview() {
+export function StudentPreview() {
   const { theme } = useTheme();
 
   return (

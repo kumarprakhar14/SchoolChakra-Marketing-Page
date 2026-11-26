@@ -1,17 +1,23 @@
 import { ThemeProvider, TenantProvider, UIProvider, useTheme } from './contexts';
-import {
-  Navbar,
-  Hero,
-  Problem,
-  RoleSwitcher,
-  BentoGrid,
-  Architecture,
-  FAQ,
-  Pilot,
-  Footer,
-  PilotModal,
-} from './components/sections';
+import { RouterProvider, useRouter } from './router';
+import { Navbar, Footer, PilotModal } from './components/sections';
 import { useGoogleFonts } from './hooks';
+import {
+  HomePage,
+  FeaturesPage,
+  SolutionsPage,
+  PricingPage,
+  SecurityPage,
+  DemoPage,
+  GettingStartedPage,
+  PilotProgramPage,
+  ContactPage,
+  AboutPage,
+  ResourcesPage,
+  ChangelogPage,
+  HelpPage,
+  NotFoundPage,
+} from './pages';
 
 function AtmosphericWash() {
   const { theme } = useTheme();
@@ -26,22 +32,51 @@ function AtmosphericWash() {
   );
 }
 
+function RouteView() {
+  const { pathname } = useRouter();
+
+  switch (pathname) {
+    case '/':
+      return <HomePage />;
+    case '/features':
+      return <FeaturesPage />;
+    case '/solutions':
+      return <SolutionsPage />;
+    case '/pricing':
+      return <PricingPage />;
+    case '/security':
+      return <SecurityPage />;
+    case '/demo':
+      return <DemoPage />;
+    case '/getting-started':
+      return <GettingStartedPage />;
+    case '/pilot-program':
+      return <PilotProgramPage />;
+    case '/contact':
+      return <ContactPage />;
+    case '/about':
+      return <AboutPage />;
+    case '/resources':
+      return <ResourcesPage />;
+    case '/changelog':
+      return <ChangelogPage />;
+    case '/help':
+      return <HelpPage />;
+    default:
+      return <NotFoundPage />;
+  }
+}
+
 function PageShell() {
   useGoogleFonts();
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 antialiased relative overflow-x-clip">
+    <div className="min-h-screen bg-white text-slate-900 antialiased relative overflow-x-clip flex flex-col">
       <AtmosphericWash />
 
       <Navbar />
-      <main>
-        <Hero />
-        <Problem />
-        <RoleSwitcher />
-        <BentoGrid />
-        <Architecture />
-        <FAQ />
-        <Pilot />
+      <main className="flex-1">
+        <RouteView />
       </main>
       <Footer />
       <PilotModal />
@@ -54,7 +89,9 @@ export default function App() {
     <ThemeProvider>
       <TenantProvider>
         <UIProvider>
-          <PageShell />
+          <RouterProvider>
+            <PageShell />
+          </RouterProvider>
         </UIProvider>
       </TenantProvider>
     </ThemeProvider>

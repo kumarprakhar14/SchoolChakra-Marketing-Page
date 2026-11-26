@@ -1,14 +1,9 @@
-import { useState } from 'react';
-import { HelpCircle, ChevronDown, CheckCircle2, Shield, HeartHandshake } from 'lucide-react';
+import { HelpCircle, CheckCircle2, Shield, HeartHandshake } from 'lucide-react';
 import { useTheme } from '../../contexts';
 import { Badge } from '../ui';
+import { FAQAccordion, type AccordionItem } from '../shared';
 
-interface FAQItem {
-  question: string;
-  answer: string;
-}
-
-const FAQ_ITEMS: FAQItem[] = [
+const FAQ_ITEMS: AccordionItem[] = [
   {
     question: 'What does the Founding Pilot cost?',
     answer:
@@ -38,11 +33,6 @@ const FAQ_ITEMS: FAQItem[] = [
 
 export function FAQ() {
   const { theme } = useTheme();
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-  const toggle = (idx: number) => {
-    setOpenIndex(openIndex === idx ? null : idx);
-  };
 
   return (
     <section id="faq" className="relative z-10 w-full bg-slate-50 py-16 sm:py-20 border-t border-slate-200/70">
@@ -79,37 +69,7 @@ export function FAQ() {
         </div>
 
         {/* Accordion List */}
-        <div className="max-w-3xl mx-auto space-y-3">
-          {FAQ_ITEMS.map((item, idx) => {
-            const isOpen = openIndex === idx;
-            return (
-              <div
-                key={idx}
-                className="rounded-2xl border border-slate-200 bg-white overflow-hidden transition-all shadow-2xs hover:border-slate-300"
-              >
-                <button
-                  type="button"
-                  onClick={() => toggle(idx)}
-                  className="w-full flex items-center justify-between p-4 sm:p-5 text-left cursor-pointer transition-colors"
-                >
-                  <span className="font-bold text-slate-900 text-sm sm:text-base pr-4">
-                    {item.question}
-                  </span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-slate-500 shrink-0 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 text-slate-900' : ''
-                    }`}
-                  />
-                </button>
-                {isOpen && (
-                  <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-0 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 animate-fadeIn">
-                    <p>{item.answer}</p>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+        <FAQAccordion items={FAQ_ITEMS} defaultOpenIndex={0} className="max-w-3xl mx-auto" />
 
         {/* Trust Badges Bar */}
         <div className="max-w-2xl mx-auto mt-10 pt-6 border-t border-slate-200/80 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-500">

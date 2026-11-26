@@ -75,6 +75,8 @@ export interface DemoCanvasProps {
   defaultTheme?: string;
   /** Initial tab (e.g., 'dashboard', 'users', 'import', 'fees') */
   defaultTab?: DemoTabId;
+  /** Optional controlled active tab */
+  activeTab?: DemoTabId;
   /** Optional container CSS classes */
   className?: string;
   /** Whether to show ambient floating badges natively inside the canvas (default: false) */

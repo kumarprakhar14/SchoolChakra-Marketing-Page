@@ -15,6 +15,7 @@ export const DemoCanvas: React.FC<DemoCanvasProps> = ({
   theme: controlledTheme,
   defaultTheme = 'blue',
   defaultTab = 'dashboard',
+  activeTab: controlledTab,
   className = '',
   showInternalBadges = false,
   onSchoolChange,
@@ -23,7 +24,8 @@ export const DemoCanvas: React.FC<DemoCanvasProps> = ({
 }) => {
   const [overrideSchoolId, setOverrideSchoolId] = useState<string | null>(null);
   const [overrideThemeId, setOverrideThemeId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<DemoTabId>(defaultTab);
+  const [internalTab, setInternalTab] = useState<DemoTabId>(defaultTab);
+  const activeTab = controlledTab ?? internalTab;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [toastVisible, setToastVisible] = useState<boolean>(true);
   const [cronVisible, setCronVisible] = useState<boolean>(true);
@@ -57,7 +59,7 @@ export const DemoCanvas: React.FC<DemoCanvasProps> = ({
   };
 
   const handleTabSelect = (tabId: DemoTabId) => {
-    setActiveTab(tabId);
+    setInternalTab(tabId);
     setIsMobileMenuOpen(false);
     onTabChange?.(tabId);
   };

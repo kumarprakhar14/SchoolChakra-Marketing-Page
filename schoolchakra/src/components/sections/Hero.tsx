@@ -7,6 +7,7 @@ import {
 import { useTheme } from '../../contexts';
 import { useTenant } from '../../contexts';
 import { useUI } from '../../contexts';
+import { Link } from '../../router';
 import { Button, HeroRotatingPill } from '../ui';
 import { DemoCanvas } from '../demo-canvas';
 import type { DemoSchool } from '../demo-canvas';
@@ -44,9 +45,13 @@ export function Hero() {
             Founding School Pilot Open — Rolling Intake
           </span>
           <span className="text-slate-300 hidden sm:inline">|</span>
-          <a href="#pilot" className="text-[11px] sm:text-xs font-bold inline-flex items-center gap-0.5 hover:underline whitespace-nowrap shrink-0" style={{ color: theme.hex }}>
+          <Link
+            to="/pilot-program"
+            className="text-[11px] sm:text-xs font-bold inline-flex items-center gap-0.5 hover:underline whitespace-nowrap shrink-0"
+            style={{ color: theme.hex }}
+          >
             Read terms <ChevronRight className="w-3 h-3" />
-          </a>
+          </Link>
         </div>
 
         <h1 className="text-4xl sm:text-5xl lg:text-[60px] font-extrabold tracking-tight text-slate-900 leading-[1.15] mb-4 sm:mb-5">

@@ -29,7 +29,19 @@ export interface ServiceResult {
   success: boolean;
   submissionId: string;
   message: string;
+  deliveredRemotely?: boolean;
   data?: any;
+}
+
+export interface ContactEnquiryPayload {
+  fullName: string;
+  schoolName: string;
+  email: string;
+  phone: string;
+  role: string;
+  studentStrength?: string;
+  topic: string;
+  notes?: string;
 }
 
 const LOCAL_STORAGE_KEY = 'schoolchakra_pilot_leads';
@@ -305,6 +317,88 @@ export async function logCalBookingToGoogleSheets(
     success: true,
     submissionId: payload.submissionId,
     message: isReschedule ? 'Reschedule event logged locally.' : 'Booking event logged locally.',
+  };
+}
+
+/**
+ * 3. Submit General Contact Enquiry via configured Google Sheets Webhook
+ */
+export async function submitContactEnquiry(
+  payload: ContactEnquiryPayload
+): Promise<ServiceResult> {
+  const submissionId = generateSubmissionId().replace('SC-PILOT-', 'SC-ENQ-');
+  const timestamp = new Date().toISOString();
+
+  const record = {
+    action: 'CREATE_CONTACT_ENQUIRY',
+    submissionId,
+    timestamp,
+    schoolName: payload.schoolName,
+    contactName: payload.fullName,
+    board: payload.role,
+    studentStrength: payload.studentStrength || '',
+    legacySystem: payload.topic,
+    contact: `${payload.email} | ${payload.phone}`,
+    notes: payload.notes || '',
+    status: `Enquiry: ${payload.topic}`,
+    scheduledDate: 'N/A',
+    calBookingUid: '',
+  };
+
+  saveLeadToLocalStorage(record);
+
+  const webhookUrl = import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL as string | undefined;
+  const isPlaceholderWebhook =
+    !webhookUrl ||
+    webhookUrl.trim() === '' ||
+    webhookUrl.includes('YOUR_DEPLOYMENT_ID');
+
+  if (!isPlaceholderWebhook) {
+    try {
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8',
+        },
+        body: JSON.stringify(record),
+      });
+
+      if (response.ok) {
+        return {
+          success: true,
+          deliveredRemotely: true,
+          submissionId,
+          message: 'Your enquiry has been sent to the SchoolChakra team.',
+        };
+      }
+    } catch {
+      try {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain',
+          },
+          body: JSON.stringify(record),
+        });
+        return {
+          success: true,
+          deliveredRemotely: true,
+          submissionId,
+          message: 'Your enquiry has been submitted through the configured lead webhook.',
+        };
+      } catch (err) {
+        console.warn('[SchoolChakra] Contact enquiry delivery failed:', err);
+      }
+    }
+  }
+
+  return {
+    success: false,
+    deliveredRemotely: false,
+    submissionId,
+    message:
+      'Remote delivery could not be confirmed from this browser. Your enquiry details are saved locally—please connect directly via WhatsApp or the walkthrough scheduler below.',
   };
 }
 

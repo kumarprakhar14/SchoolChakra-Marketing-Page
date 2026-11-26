@@ -12,6 +12,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTheme } from '../../contexts';
 import { useUI } from '../../contexts';
+import { Link } from '../../router';
 import { Button } from '../ui';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -292,6 +293,14 @@ export function Pilot() {
               >
                 Apply for the Founding Pilot
               </Button>
+              <div className="mt-3 text-center">
+                <Link
+                  to="/pilot-program"
+                  className="text-xs font-semibold text-slate-600 hover:text-slate-900 underline transition-colors"
+                >
+                  Read full Pilot Program overview →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
