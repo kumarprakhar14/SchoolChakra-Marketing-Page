@@ -101,7 +101,7 @@ export function SchoolChakraHub({
 .sc-pendtxt{font-size:20px;font-weight:700;fill:var(--_m)}
 .sc-note{font-size:13px;font-weight:700;fill:var(--_i)}
 .sc-sm{font-size:8.5px;fill:var(--_m)}
-.sc-brand{font-size:13px;font-weight:700;fill:var(--_i)}
+.sc-brand{font-size:11px;font-weight:700;fill:var(--_i)}
 .sc-role{font-size:10px;font-weight:600;fill:var(--_i)}
 .sc-tag{font-size:9.5px;font-weight:500;fill:var(--_m);text-anchor:middle}
 .sc-cap{font-size:12px;font-weight:600;fill:var(--_i)}
@@ -111,7 +111,6 @@ export function SchoolChakraHub({
 .sc-hl{fill:var(--_p);fill-opacity:.07;stroke:var(--_p);stroke-width:1.6}
 .sc-glow{fill:none;stroke:var(--_p);stroke-width:6;stroke-opacity:.16}
 .sc-pulse{fill:none;stroke:var(--_p);stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:center}
-.sc-spin{transform-origin:0 0}
 .sc-cam{transform-origin:0 0;transform:translate(320px,277.5px) scale(1.35) translate(-320px,-225px)}
 .sc-fly0,.sc-fly1,.sc-fly2,.sc-fly3,.sc-fly4{opacity:0}
 .sc-bar{transform-box:fill-box;transform-origin:left center;transform:scaleX(.9)}
@@ -142,10 +141,7 @@ export function SchoolChakraHub({
 .sc-state-idle .sc-cap-E{opacity:0}
 .sc-state-idle .sc-cap-A{opacity:1}
 
-@keyframes sc-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-
 @media (prefers-reduced-motion: reduce){
-  .sc-spin{animation:none}
   .sc-cam{transform:translate(320px,277.5px) scale(1.35) translate(-320px,-225px)}
 }
 
@@ -203,7 +199,6 @@ export function SchoolChakraHub({
   @keyframes sc-role-3{0%{opacity:0}80%{opacity:0}82.5%{opacity:1}87.5%{opacity:1}90%,100%{opacity:0}}
   @keyframes sc-chk{0%{opacity:0}81.67%{opacity:0}83.75%,100%{opacity:1}}
   @keyframes sc-pulse{0%{opacity:0;transform:scale(1)}77.5%{opacity:0;transform:scale(1)}78.75%{opacity:.7;transform:scale(1)}90%,100%{opacity:0;transform:scale(1.1)}}
-  @keyframes sc-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 }
 
 /* Playing State: plays once when 70% scrolled into viewport */
@@ -288,9 +283,8 @@ export function SchoolChakraHub({
 <path className="sc-ln sc-lines" d="M320 412 Q357.4 318.5 320 225" />
 <path className="sc-dot sc-dot4" d="M320 412 Q357.4 318.5 320 225" pathLength="100" />
 <rect className="sc-panel sc-shadow" x="150" y="100" width="340" height="250" rx="18" />
-<rect className="sc-pfill" x="164" y="110" width="26" height="26" rx="8" />
-<g transform="translate(177 123)"><g className="sc-spin"><circle r="6" fill="none" stroke="#fff" strokeWidth="1.3" /><line x1="0" y1="0" x2="6.00" y2="0.00" stroke="#fff" strokeWidth="1" /><line x1="0" y1="0" x2="3.00" y2="5.20" stroke="#fff" strokeWidth="1" /><line x1="0" y1="0" x2="-3.00" y2="5.20" stroke="#fff" strokeWidth="1" /><line x1="0" y1="0" x2="-6.00" y2="0.00" stroke="#fff" strokeWidth="1" /><line x1="0" y1="0" x2="-3.00" y2="-5.20" stroke="#fff" strokeWidth="1" /><line x1="0" y1="0" x2="3.00" y2="-5.20" stroke="#fff" strokeWidth="1" /><circle r="1.6" fill="#fff" /></g></g>
-<text className="sc-brand" x="198" y="128">SchoolChakra</text>
+<image href="/App_logo_light.png" x="164" y="111" width="20" height="20" preserveAspectRatio="xMidYMid meet" />
+<text className="sc-brand" x="190" y="125">SchoolChakra</text>
 <rect className="sc-chip" x="368" y="110" width="108" height="22" rx="11" />
 <g className="sc-role-0"><circle className="sc-pfill" cx="381" cy="121" r="3" /><text className="sc-role" x="390" y="125">Principal</text></g>
 <g className="sc-role-1"><circle className="sc-pfill" cx="381" cy="121" r="3" /><text className="sc-role" x="390" y="125">Teacher</text></g>

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import {
   Instrument_Serif,
   JetBrains_Mono,
+  Montserrat,
   Plus_Jakarta_Sans,
 } from 'next/font/google';
 import '../index.css';
@@ -39,6 +40,13 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['600'],
+  variable: '--font-montserrat',
+  display: 'swap',
+});
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -51,8 +59,17 @@ export const metadata: Metadata = {
     template: '%s',
   },
   description: DEFAULT_DESCRIPTION,
+  manifest: '/site.webmanifest',
   icons: {
-    icon: '/favicon.svg',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
   openGraph: {
     siteName: SITE_NAME,
@@ -73,7 +90,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${plusJakarta.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}
+      className={`${plusJakarta.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} ${montserrat.variable}`}
     >
       <body>
         <AppProviders>
