@@ -7,23 +7,7 @@ import { BRAND_THEMES } from '../../constants';
 import { HEADER_NAV_GROUPS, OPEN_APP_URL } from '../../data/navigation';
 import { Link, useRouter } from '../../router';
 import { Button } from '../ui';
-
-function ChakraLogoMark() {
-  return (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-      <circle cx="12" cy="12" r="8" />
-      <circle cx="12" cy="12" r="2.5" />
-      <line x1="12" y1="4" x2="12" y2="9.5" />
-      <line x1="12" y1="14.5" x2="12" y2="20" />
-      <line x1="4" y1="12" x2="9.5" y2="12" />
-      <line x1="14.5" y1="12" x2="20" y2="12" />
-      <line x1="6.34" y1="6.34" x2="10.2" y2="10.2" />
-      <line x1="13.8" y1="13.8" x2="17.66" y2="17.66" />
-      <line x1="17.66" y1="6.34" x2="13.8" y2="10.2" />
-      <line x1="10.2" y1="13.8" x2="6.34" y2="17.66" />
-    </svg>
-  );
-}
+import { Wordmark } from '../Wordmark';
 
 export function Navbar() {
   const { activeThemeKey, theme } = useTheme();
@@ -103,16 +87,14 @@ export function Navbar() {
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-105"
-              style={{ backgroundColor: BRAND_THEMES[activeThemeKey].hex }}
-            >
-              <ChakraLogoMark />
-            </div>
-            <span className="font-bold tracking-tight text-slate-900 text-sm sm:text-base">
-              SchoolChakra
-            </span>
+          <Link to="/" aria-label="SchoolChakra" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
+            <img
+              src="/App_logo_light.png"
+              alt=""
+              aria-hidden="true"
+              className="w-8 h-8 object-contain shrink-0 transition-transform group-hover:scale-105"
+            />
+            <Wordmark className="text-sm sm:text-[15px] leading-none" />
           </Link>
         </div>
 
@@ -139,7 +121,10 @@ export function Navbar() {
             const isOpen = openDropdown === group.id;
             const hasActiveChild = group.items?.some((item) => {
               const basePath = item.to.split('#')[0] || '/';
-              return basePath === pathname;
+              return (
+                basePath === pathname ||
+                (basePath !== '/' && pathname.startsWith(`${basePath}/`))
+              );
             });
 
             return (
@@ -170,7 +155,10 @@ export function Navbar() {
                   >
                     {group.items.map((item) => {
                       const basePath = item.to.split('#')[0] || '/';
-                      const itemActive = basePath === pathname && !item.to.includes('#');
+                      const itemActive =
+                        !item.to.includes('#') &&
+                        (basePath === pathname ||
+                          (basePath !== '/' && pathname.startsWith(`${basePath}/`)));
                       return (
                         <Link
                           key={item.to}
@@ -235,16 +223,17 @@ export function Navbar() {
             <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-100">
               <Link
                 to="/"
+                aria-label="SchoolChakra"
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-2"
               >
-                <div
-                  className="w-7 h-7 rounded-lg flex items-center justify-center text-white"
-                  style={{ backgroundColor: theme.hex }}
-                >
-                  <ChakraLogoMark />
-                </div>
-                <span className="font-bold text-slate-900 text-sm">SchoolChakra</span>
+                <img
+                  src="/App_logo_light.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="w-7 h-7 object-contain shrink-0"
+                />
+                <Wordmark className="text-sm leading-none" />
               </Link>
               <button
                 type="button"

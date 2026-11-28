@@ -19,7 +19,7 @@
 .sc-pendtxt{font-size:20px;font-weight:700;fill:var(--_m)}
 .sc-note{font-size:13px;font-weight:700;fill:var(--_i)}
 .sc-sm{font-size:8.5px;fill:var(--_m)}
-.sc-brand{font-size:13px;font-weight:700;fill:var(--_i)}
+.sc-brand{font-size:11px;font-weight:700;fill:var(--_i)}
 .sc-role{font-size:10px;font-weight:600;fill:var(--_i)}
 .sc-tag{font-size:9.5px;font-weight:500;fill:var(--_m);text-anchor:middle}
 .sc-cap{font-size:12px;font-weight:600;fill:var(--_i)}
@@ -163,9 +163,8 @@
 <path class="sc-ln sc-lines" d="M320 412 Q357.4 318.5 320 225" />
 <path class="sc-dot sc-dot4" d="M320 412 Q357.4 318.5 320 225" pathLength="100" />
 <rect class="sc-panel sc-shadow" x="150" y="100" width="340" height="250" rx="18" />
-<rect class="sc-pfill" x="164" y="110" width="26" height="26" rx="8" />
-<g transform="translate(177 123)"><g class="sc-spin"><circle r="6" fill="none" stroke="#fff" stroke-width="1.3" /><line x1="0" y1="0" x2="6.00" y2="0.00" stroke="#fff" stroke-width="1" /><line x1="0" y1="0" x2="3.00" y2="5.20" stroke="#fff" stroke-width="1" /><line x1="0" y1="0" x2="-3.00" y2="5.20" stroke="#fff" stroke-width="1" /><line x1="0" y1="0" x2="-6.00" y2="0.00" stroke="#fff" stroke-width="1" /><line x1="0" y1="0" x2="-3.00" y2="-5.20" stroke="#fff" stroke-width="1" /><line x1="0" y1="0" x2="3.00" y2="-5.20" stroke="#fff" stroke-width="1" /><circle r="1.6" fill="#fff" /></g></g>
-<text class="sc-brand" x="198" y="128">SchoolChakra</text>
+<image href="/App_logo_light.png" x="164" y="111" width="20" height="20" preserveAspectRatio="xMidYMid meet" />
+<text class="sc-brand" x="190" y="125">SchoolChakra</text>
 <rect class="sc-chip" x="368" y="110" width="108" height="22" rx="11" />
 <g class="sc-role-0"><circle class="sc-pfill" cx="381" cy="121" r="3" /><text class="sc-role" x="390" y="125">Principal</text></g>
 <g class="sc-role-1"><circle class="sc-pfill" cx="381" cy="121" r="3" /><text class="sc-role" x="390" y="125">Teacher</text></g>

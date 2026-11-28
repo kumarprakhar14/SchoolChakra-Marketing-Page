@@ -11,4 +11,6 @@ export { AboutPage } from './AboutPage';
 export { ResourcesPage } from './ResourcesPage';
 export { ChangelogPage } from './ChangelogPage';
 export { HelpPage } from './HelpPage';
+export { HelpCategoryPage } from './HelpCategoryPage';
+export { HelpArticlePage } from './HelpArticlePage';
 export { NotFoundPage } from './NotFoundPage';

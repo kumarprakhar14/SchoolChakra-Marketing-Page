@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { ImageResponse } from 'next/og';
 
 export const alt = 'SchoolChakra: School ERP for Fees, Attendance & Timetables (India)';
@@ -6,6 +8,10 @@ export const size = {
   height: 630,
 };
 export const contentType = 'image/png';
+
+const publicDir = join(process.cwd(), 'public');
+const appLogoDataUri = `data:image/png;base64,${readFileSync(join(publicDir, 'App_logo_light.png')).toString('base64')}`;
+const wordmarkDataUri = `data:image/png;base64,${readFileSync(join(publicDir, 'Wordmark.png')).toString('base64')}`;
 
 export default function OpenGraphImage() {
   return new ImageResponse(
@@ -25,25 +31,8 @@ export default function OpenGraphImage() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div
-            style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '12px',
-              backgroundColor: '#2563EB',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#FFFFFF',
-              fontSize: '26px',
-              fontWeight: 800,
-            }}
-          >
-            S
-          </div>
-          <span style={{ fontSize: '28px', fontWeight: 800, letterSpacing: '-0.02em' }}>
-            SchoolChakra
-          </span>
+          <img src={appLogoDataUri} width={56} height={56} alt="" />
+          <img src={wordmarkDataUri} width={314} height={24} alt="SchoolChakra" />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '940px' }}>

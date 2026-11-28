@@ -1,6 +1,9 @@
 import { FOOTER_COLUMNS } from '../../data/navigation';
 import { Link } from '../../router';
 import { PilotFooterTrigger } from '../shared';
+import { Wordmark } from '../Wordmark';
+
+const CURRENT_YEAR = new Date().getFullYear();
 
 export function Footer() {
   return (
@@ -9,14 +12,14 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-slate-200/80">
           {/* Brand Area */}
           <div className="md:col-span-4 space-y-3">
-            <Link to="/" className="inline-flex items-center gap-2.5 group">
-              <div
-                className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs shrink-0 transition-transform group-hover:scale-105"
-                style={{ backgroundColor: 'var(--brand-hex, #2563EB)' }}
-              >
-                S
-              </div>
-              <span className="font-bold text-slate-900 text-base">SchoolChakra</span>
+            <Link to="/" aria-label="SchoolChakra" className="inline-flex items-center gap-2.5 group">
+              <img
+                src="/App_logo_light.png"
+                alt=""
+                aria-hidden="true"
+                className="w-7 h-7 object-contain shrink-0 transition-transform group-hover:scale-105"
+              />
+              <Wordmark className="text-base leading-none" />
             </Link>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xs">
               School management platform for student records, attendance, timetables, assignments, notices, and fee operations.
@@ -51,7 +54,7 @@ export function Footer() {
         </div>
 
         <div className="pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-500">
-          <span className="font-mono text-slate-400">© 2026 SchoolChakra</span>
+          <span className="font-mono text-slate-400">© {CURRENT_YEAR} SchoolChakra</span>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500">
             <span>
               Privacy Policy &amp; Terms of Service pages are pending publication.{' '}
