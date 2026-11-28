@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, type ReactNode } from 'react';
 import {
   Sparkles,
@@ -363,7 +365,7 @@ export function BentoGrid() {
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 mt-3">
             Three jobs that eat your office&rsquo;s week,{' '}
-            <span className="font-normal italic" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
+            <span className="font-normal italic" style={{ fontFamily: 'var(--font-serif)' }}>
               done in minutes.
             </span>
           </h2>

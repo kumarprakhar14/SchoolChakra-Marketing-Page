@@ -1,5 +1,4 @@
 import { HelpCircle, CheckCircle2, Shield, HeartHandshake } from 'lucide-react';
-import { useTheme } from '../../contexts';
 import { Badge } from '../ui';
 import { FAQAccordion, type AccordionItem } from '../shared';
 
@@ -32,8 +31,6 @@ const FAQ_ITEMS: AccordionItem[] = [
 ];
 
 export function FAQ() {
-  const { theme } = useTheme();
-
   return (
     <section id="faq" className="relative z-10 w-full bg-slate-50 py-16 sm:py-20 border-t border-slate-200/70">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
@@ -43,7 +40,7 @@ export function FAQ() {
           </Badge>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 mt-2.5">
             Everything leadership asks before{' '}
-            <span className="font-normal italic" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
+            <span className="font-normal italic" style={{ fontFamily: 'var(--font-serif)' }}>
               joining the pilot.
             </span>
           </h2>
@@ -56,7 +53,7 @@ export function FAQ() {
         <div className="max-w-3xl mx-auto mb-10 p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-start gap-4">
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 mt-0.5"
-            style={{ backgroundColor: theme.hex }}
+            style={{ backgroundColor: 'var(--brand-hex, #2563EB)' }}
           >
             <HeartHandshake className="w-5 h-5" />
           </div>

@@ -1,11 +1,8 @@
-import { useTheme, useUI } from '../../contexts';
 import { FOOTER_COLUMNS } from '../../data/navigation';
 import { Link } from '../../router';
+import { PilotFooterTrigger } from '../shared';
 
 export function Footer() {
-  const { theme } = useTheme();
-  const { openPilotModal } = useUI();
-
   return (
     <footer className="border-t border-slate-200 bg-slate-50/60 py-12 sm:py-14 px-4 sm:px-6 lg:px-8">
       <div className="max-w-[1400px] mx-auto">
@@ -15,7 +12,7 @@ export function Footer() {
             <Link to="/" className="inline-flex items-center gap-2.5 group">
               <div
                 className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs shrink-0 transition-transform group-hover:scale-105"
-                style={{ backgroundColor: theme.hex }}
+                style={{ backgroundColor: 'var(--brand-hex, #2563EB)' }}
               >
                 S
               </div>
@@ -25,14 +22,7 @@ export function Footer() {
               School management platform for student records, attendance, timetables, assignments, notices, and fee operations.
             </p>
             <div className="pt-1">
-              <button
-                type="button"
-                onClick={openPilotModal}
-                className="text-xs font-semibold hover:underline cursor-pointer"
-                style={{ color: theme.hex }}
-              >
-                Apply for the Founding Pilot →
-              </button>
+              <PilotFooterTrigger />
             </div>
           </div>
 

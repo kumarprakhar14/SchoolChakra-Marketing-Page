@@ -1,6 +1,5 @@
 import { Info, ArrowRight } from 'lucide-react';
 import { Link } from '../../router';
-import { useTheme } from '../../contexts';
 
 interface PlaceholderNoticeProps {
   label?: string;
@@ -19,8 +18,6 @@ export function PlaceholderNotice({
   ctaTo = '/contact',
   className = '',
 }: PlaceholderNoticeProps) {
-  const { theme } = useTheme();
-
   return (
     <div
       className={`rounded-2xl bg-slate-50/90 border border-slate-200/90 p-5 sm:p-6 ${className}`}
@@ -50,7 +47,7 @@ export function PlaceholderNotice({
           <Link
             to={ctaTo}
             className="inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-full bg-white border border-slate-200 hover:border-slate-300 transition-colors shrink-0 self-start"
-            style={{ color: theme.hex }}
+            style={{ color: 'var(--brand-hex, #2563EB)' }}
           >
             <span>{ctaLabel}</span>
             <ArrowRight className="w-3.5 h-3.5" />

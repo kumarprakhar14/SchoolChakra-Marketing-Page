@@ -1,5 +1,4 @@
 import type { CSSProperties, HTMLAttributes } from 'react';
-import { useTheme } from '../../contexts';
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'elevated' | 'outlined' | 'glass';
@@ -16,8 +15,6 @@ export function Card({
   style,
   ...props
 }: CardProps) {
-  const { theme } = useTheme();
-
   const baseStyles = 'rounded-2xl transition-all duration-300';
 
   const variantStyles = {
@@ -44,7 +41,7 @@ export function Card({
 
   if (variant === 'glass') {
     backgroundStyle = { backgroundColor: '#ffffffF2' };
-    borderStyle = { borderColor: theme.borderLight };
+    borderStyle = { borderColor: 'var(--brand-border, #BFDBFE)' };
   }
 
   return (

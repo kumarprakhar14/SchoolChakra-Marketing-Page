@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
-import { useTheme, useUI } from '../../contexts';
 import { Link } from '../../router';
-import { Button } from '../ui';
+import { PilotTriggerButton } from './PilotTriggerButton';
 
 interface CTASectionProps {
   eyebrow?: string;
@@ -25,9 +24,6 @@ export function CTASection({
   secondaryTo,
   surface = 'white',
 }: CTASectionProps) {
-  const { theme } = useTheme();
-  const { openPilotModal } = useUI();
-
   const bgClass = surface === 'slate' ? 'bg-slate-50' : 'bg-white';
 
   return (
@@ -36,7 +32,8 @@ export function CTASection({
         <div
           className="rounded-3xl p-6 sm:p-10 lg:p-12 text-white shadow-2xl relative overflow-hidden transition-all duration-700"
           style={{
-            background: `radial-gradient(circle at top left, ${theme.hex}D9 0%, transparent 65%), linear-gradient(140deg, #1E293B 0%, #0B0F19 100%)`,
+            background:
+              'radial-gradient(circle at top left, var(--brand-glow, #2563EBD9) 0%, transparent 65%), linear-gradient(140deg, #1E293B 0%, #0B0F19 100%)',
           }}
         >
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -55,23 +52,21 @@ export function CTASection({
 
             <div className="flex flex-wrap items-center gap-3 shrink-0">
               {primaryAction === 'pilot-modal' ? (
-                <Button
-                  type="button"
-                  onClick={openPilotModal}
+                <PilotTriggerButton
                   size="lg"
                   rightIcon={<ArrowRight className="w-4 h-4" />}
                   className="px-6"
-                  style={{ backgroundColor: theme.hex }}
+                  useBrandBg
                 >
                   {primaryLabel}
-                </Button>
+                </PilotTriggerButton>
               ) : (
                 <Link
                   to={primaryAction.to}
                   className="inline-flex items-center justify-center gap-2 font-semibold rounded-full px-6 py-3 text-base text-white shadow-sm hover:opacity-95 transition-all"
                   style={{
-                    backgroundColor: theme.hex,
-                    boxShadow: `0 0 0 2px ${theme.hex}45`,
+                    backgroundColor: 'var(--brand-hex, #2563EB)',
+                    boxShadow: '0 0 0 2px var(--brand-ring, #2563EB45)',
                   }}
                 >
                   <span>{primaryLabel}</span>

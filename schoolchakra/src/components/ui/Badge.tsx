@@ -1,5 +1,4 @@
 import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
-import { useTheme } from '../../contexts';
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: 'default' | 'success' | 'warning' | 'danger' | 'info' | 'theme' | 'outline';
@@ -18,8 +17,6 @@ export function Badge({
   style,
   ...props
 }: BadgeProps) {
-  const { theme } = useTheme();
-
   const baseStyles = `
     inline-flex items-center gap-1 font-mono font-medium rounded
     transition-colors whitespace-nowrap
@@ -48,8 +45,11 @@ export function Badge({
   let borderStyle: CSSProperties = {};
 
   if (variant === 'theme') {
-    backgroundStyle = { backgroundColor: theme.lightBg };
-    borderStyle = { borderColor: theme.borderLight, color: theme.hex };
+    backgroundStyle = { backgroundColor: 'var(--brand-light, #EFF6FF)' };
+    borderStyle = {
+      borderColor: 'var(--brand-border, #BFDBFE)',
+      color: 'var(--brand-hex, #2563EB)',
+    };
   }
 
   return (
@@ -58,7 +58,12 @@ export function Badge({
       style={{ ...backgroundStyle, ...borderStyle, ...style }}
       {...props}
     >
-      {dot && <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: theme.hex }} />}
+      {dot && (
+        <span
+          className="w-1.5 h-1.5 rounded-full"
+          style={{ backgroundColor: 'var(--brand-hex, #2563EB)' }}
+        />
+      )}
       {leftIcon && <span className="flex-shrink-0">{leftIcon}</span>}
       {children}
     </span>

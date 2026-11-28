@@ -1,13 +1,11 @@
-import type { AnchorHTMLAttributes, MouseEvent } from 'react';
-import { useRouter } from './router-context';
+import NextLink from 'next/link';
+import type { AnchorHTMLAttributes } from 'react';
 
 interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   to: string;
 }
 
-export function Link({ to, onClick, target, ...props }: LinkProps) {
-  const { navigate } = useRouter();
-
+export function Link({ to, target, ...props }: LinkProps) {
   const isExternal =
     target === '_blank' ||
     to.startsWith('http://') ||
@@ -15,17 +13,9 @@ export function Link({ to, onClick, target, ...props }: LinkProps) {
     to.startsWith('mailto:') ||
     to.startsWith('tel:');
 
-  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
-    onClick?.(e);
-    if (e.defaultPrevented || isExternal) return;
+  if (isExternal) {
+    return <a href={to} target={target} {...props} />;
+  }
 
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
-      return;
-    }
-
-    e.preventDefault();
-    navigate(to);
-  };
-
-  return <a href={to} target={target} onClick={handleClick} {...props} />;
+  return <NextLink href={to} target={target} {...props} />;
 }

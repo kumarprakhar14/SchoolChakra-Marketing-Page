@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
 import type { RotatingWordItem } from '../../types';
 import {
@@ -6,6 +8,7 @@ import {
   HERO_TRANSITION_DURATION_MS,
   resolveRotatingWordTheme,
 } from '../../constants/hero';
+import { usePrefersReducedMotion } from '../../hooks';
 import './HeroRotatingPill.css';
 
 export interface HeroRotatingPillProps {
@@ -24,24 +27,9 @@ export function HeroRotatingPill({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
   const [wordWidths, setWordWidths] = useState<number[]>([]);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
-    if (typeof window !== 'undefined' && window.matchMedia) {
-      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    }
-    return false;
-  });
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const measureRefs = useRef<(HTMLSpanElement | null)[]>([]);
-
-  // Listen to prefers-reduced-motion preference changes
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return;
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-    const onChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
 
   // Measure word widths dynamically across responsive breakpoints and font loading
   useEffect(() => {

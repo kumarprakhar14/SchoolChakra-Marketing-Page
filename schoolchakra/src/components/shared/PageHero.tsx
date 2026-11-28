@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { useTheme } from '../../contexts';
 import { Badge } from '../ui';
 
 interface PageHeroProps {
@@ -23,14 +22,13 @@ export function PageHero({
   children,
   centered = true,
 }: PageHeroProps) {
-  const { theme } = useTheme();
-
   return (
     <section className="relative z-10 w-full pt-10 sm:pt-12 pb-14 sm:pb-16">
       <div
         className="pointer-events-none absolute top-0 inset-x-0 h-[520px] transition-colors duration-700"
         style={{
-          background: `radial-gradient(65% 55% at 50% 0%, ${theme.lightBg} 0%, rgba(255, 255, 255, 0) 100%)`,
+          background:
+            'radial-gradient(65% 55% at 50% 0%, var(--brand-light, #EFF6FF) 0%, rgba(255, 255, 255, 0) 100%)',
         }}
       />
 

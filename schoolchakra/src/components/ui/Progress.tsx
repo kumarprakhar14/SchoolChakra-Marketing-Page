@@ -1,5 +1,3 @@
-import { useTheme } from '../../contexts';
-
 interface ProgressProps {
   value: number;
   max?: number;
@@ -19,8 +17,6 @@ export function Progress({
   className = '',
   color = 'theme',
 }: ProgressProps) {
-  const { theme } = useTheme();
-
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
 
   const sizeStyles = {
@@ -30,7 +26,7 @@ export function Progress({
   };
 
   const colorMap = {
-    theme: theme.hex,
+    theme: 'var(--brand-hex, #2563EB)',
     emerald: '#059669',
     blue: '#2563EB',
     amber: '#D97706',
@@ -81,15 +77,13 @@ export function CircularProgress({
   color = 'theme',
   showValue = true,
 }: CircularProgressProps) {
-  const { theme } = useTheme();
-
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (percentage / 100) * circumference;
 
   const colorMap = {
-    theme: theme.hex,
+    theme: 'var(--brand-hex, #2563EB)',
     emerald: '#059669',
     blue: '#2563EB',
     amber: '#D97706',

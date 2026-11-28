@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useMemo } from 'react';
 import { IndianRupee, Plus, ShieldCheck, Search } from 'lucide-react';
 import type { DemoSchool, DemoTheme, DemoFeeRecord } from '../types';
@@ -48,9 +50,9 @@ export const FeesView: React.FC<FeesViewProps> = ({ school, theme }) => {
             <IndianRupee className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div>
-            <h1 className="text-base sm:text-xl font-bold text-gray-900 tracking-tight">
+            <h2 className="text-base sm:text-xl font-bold text-gray-900 tracking-tight">
               Accounts & Fees
-            </h1>
+            </h2>
             <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">
               Manage student fee records & transactions
             </p>
@@ -196,7 +198,11 @@ export const FeesView: React.FC<FeesViewProps> = ({ school, theme }) => {
                         {fmtRupeesFromPaisa(f.due)}
                       </td>
                       <td className="px-4 py-3 text-xs sm:text-sm text-gray-600">
-                        {f.dueDate ? new Date(f.dueDate).toLocaleDateString('en-IN') : '-'}
+                        {f.dueDate
+                          ? new Date(`${f.dueDate}T00:00:00Z`).toLocaleDateString('en-IN', {
+                              timeZone: 'UTC',
+                            })
+                          : '-'}
                       </td>
                       <td className="px-4 py-3">
                         <span

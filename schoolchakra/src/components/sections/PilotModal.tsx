@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, type FormEvent } from 'react';
 import {
   X,
@@ -9,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../contexts';
 import { useUI } from '../../contexts';
+import { getWhatsAppPhone } from '../../config/env';
 import { Button, Badge } from '../ui';
 import { openCalModal, type CalBookingDetails } from '../../utils/cal';
 import {
@@ -79,7 +82,7 @@ export function PilotModal() {
       });
 
       setPilotSubmitted(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('[SchoolChakra] Submission error:', err);
       setSubmitError(
         "We couldn't send your details just now, but they're saved on this device. You can still pick a time below."
@@ -125,9 +128,7 @@ export function PilotModal() {
   };
 
   // 3. Build WhatsApp Direct Link
-  const envPhone = (import.meta.env.VITE_WHATSAPP_PHONE as string) || '';
-  const rawPhone = (envPhone && envPhone !== '919876543210') ? envPhone : '917289949342';
-  const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
+  const cleanPhone = getWhatsAppPhone();
   const whatsappMsg = encodeURIComponent(
     `Hi SchoolChakra Team! We just submitted our founding pilot request for *${
       pilotSchoolName || 'Our School'
@@ -143,7 +144,7 @@ export function PilotModal() {
       onClick={() => setIsPilotModalOpen(false)}
       role="dialog"
       aria-modal="true"
-      aria-label="Founding pilot application"
+      aria-labelledby="pilot-modal-title"
     >
       <div
         className="bg-white rounded-3xl border border-slate-200 max-w-lg w-full p-5 sm:p-8 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto"
@@ -166,7 +167,7 @@ export function PilotModal() {
               </Badge>
             </div>
 
-            <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 pr-6">
+            <h3 id="pilot-modal-title" className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 pr-6">
               Apply for Founding School Pilot
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
@@ -286,7 +287,7 @@ export function PilotModal() {
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                 REF: {submissionId || 'SC-PILOT-CONFIRMED'}
               </div>
-              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+              <h3 id="pilot-modal-title" className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
                 Thank you. We&apos;ve received your request for {pilotSchoolName.trim() || 'your school'}.
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto mt-1 leading-relaxed">

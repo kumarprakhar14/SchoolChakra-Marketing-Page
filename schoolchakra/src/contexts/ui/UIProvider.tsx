@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, type ReactNode } from 'react';
 import type { ChecklistItem, SuperAdminFlags } from '../../types';
 import { UIContext } from './ui-context';
