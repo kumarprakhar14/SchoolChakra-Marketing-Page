@@ -1,3 +1,5 @@
+'use client';
+
 import { type ReactNode } from 'react';
 import {
   Building2,
@@ -481,7 +483,7 @@ export function RoleSwitcher() {
           </Badge>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 mt-2">
             One platform. 4 specialized{' '}
-            <span className="font-normal italic" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
+            <span className="font-normal italic" style={{ fontFamily: 'var(--font-serif)' }}>
               workspaces.
             </span>
           </h2>

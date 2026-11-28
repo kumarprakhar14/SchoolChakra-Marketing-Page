@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useMemo } from 'react';
 import { Users, Search, UserPlus, Star } from 'lucide-react';
 import type { DemoSchool, DemoTheme, DemoUser, UserRole } from '../types';
@@ -49,9 +51,9 @@ export const UsersView: React.FC<UsersViewProps> = ({ school, theme }) => {
             <Users className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div>
-            <h1 className="text-base sm:text-xl font-bold text-gray-900 tracking-tight">
+            <h2 className="text-base sm:text-xl font-bold text-gray-900 tracking-tight">
               User Management
-            </h1>
+            </h2>
             <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">
               Manage teachers, students, and staff
             </p>

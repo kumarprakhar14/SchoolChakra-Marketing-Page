@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useMemo } from 'react';
 import type { DemoCanvasProps, DemoTabId } from './types';
 import { SCHOOLS, THEMES, TABS } from './mockData';

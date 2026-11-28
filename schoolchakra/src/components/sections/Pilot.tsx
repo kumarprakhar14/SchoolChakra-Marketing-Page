@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef } from 'react';
 import {
   Sparkles,
@@ -185,7 +187,7 @@ export function Pilot() {
                 Bring SchoolChakra to your campus with{' '}
                 <span
                   className="font-normal italic underline decoration-white/40"
-                  style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                  style={{ fontFamily: 'var(--font-serif)' }}
                 >
                   done-for-you
                 </span>{' '}

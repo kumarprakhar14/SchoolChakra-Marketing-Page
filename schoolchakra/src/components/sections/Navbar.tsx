@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
 import { useTheme, useUI } from '../../contexts';

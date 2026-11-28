@@ -1,16 +1,14 @@
-import { useState } from 'react';
+'use client';
+
 import {
   CheckCircle2,
   ArrowRight,
   ChevronRight,
 } from 'lucide-react';
-import { useTheme } from '../../contexts';
-import { useTenant } from '../../contexts';
-import { useUI } from '../../contexts';
+import { useTheme, useTenant, useUI } from '../../contexts';
 import { Link } from '../../router';
 import { Button, HeroRotatingPill } from '../ui';
 import { DemoCanvas } from '../demo-canvas';
-import type { DemoSchool } from '../demo-canvas';
 import type { BrandThemeKey } from '../../types';
 
 export function Hero() {
@@ -28,16 +26,8 @@ export function Hero() {
       ? 'lvi'
       : 'dpa';
 
-  // Active school tracking for real-time synchronization
-  const [, setUserSelectedSchool] = useState<DemoSchool | null>(null);
-
   return (
     <section id="top" className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-10 pb-16 sm:pb-20">
-      <div
-        className="pointer-events-none absolute top-0 inset-x-0 h-[720px] transition-colors duration-700"
-        style={{ background: `radial-gradient(65% 55% at 50% 0%, ${theme.lightBg} 0%, rgba(255, 255, 255, 0) 100%)` }}
-      />
-
       <div className="max-w-5xl mx-auto text-center">
         <div className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 max-w-full px-3 sm:px-3.5 py-1.5 rounded-2xl sm:rounded-full border border-slate-200/90 bg-white shadow-2xs mb-5 sm:mb-6">
           <span className="w-2 h-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: theme.hex }} />
@@ -59,7 +49,7 @@ export function Hero() {
             Every role. Every{' '}
             <span
               className="font-normal italic text-slate-900 px-1 inline-block"
-              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+              style={{ fontFamily: 'var(--font-serif)' }}
             >
               classroom.
             </span>
@@ -105,13 +95,11 @@ export function Hero() {
 
       {/* ═══ INTERACTIVE MOCKUP CANVAS ═══ */}
       <div className="relative max-w-7xl mx-auto mt-2 sm:mt-4">
-        {/* Interactive Mockup Canvas Container */}
         <div className="p-2 sm:p-3 bg-slate-100/90 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-[0_20px_50px_-15px_rgba(15,23,42,0.10)]">
           <DemoCanvas
             defaultSchool={mappedSchool}
             theme={activeThemeKey}
             onThemeChange={(th) => setActiveThemeKey(th.id as BrandThemeKey)}
-            onSchoolChange={(school) => setUserSelectedSchool(school)}
           />
         </div>
       </div>

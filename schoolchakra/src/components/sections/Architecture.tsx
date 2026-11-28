@@ -9,11 +9,8 @@ import {
   CheckCircle2,
   Download,
 } from 'lucide-react';
-import { useTheme } from '../../contexts';
 
 export function Architecture() {
-  const { theme } = useTheme();
-
   return (
     <section id="architecture" className="relative z-10 w-full bg-white py-16 sm:py-20">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
@@ -37,15 +34,18 @@ export function Architecture() {
             <div className="h-[140px] rounded-xl bg-white border border-slate-200/90 p-3 shadow-2xs mb-4 flex flex-col justify-between overflow-hidden transition-all duration-200 group-hover:shadow-xs group-hover:border-slate-300/90">
               <div className="flex items-center justify-between gap-1.5">
                 <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold tracking-wider text-slate-600 truncate">
-                  <ShieldCheck className="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-105" style={{ color: theme.hex }} />
+                  <ShieldCheck
+                    className="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-105"
+                    style={{ color: 'var(--brand-hex, #2563EB)' }}
+                  />
                   ISOLATED
                 </span>
                 <span
                   className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded border shrink-0 transition-colors"
                   style={{
-                    backgroundColor: theme.lightBg,
-                    borderColor: theme.borderLight,
-                    color: theme.hex,
+                    backgroundColor: 'var(--brand-light, #EFF6FF)',
+                    borderColor: 'var(--brand-border, #BFDBFE)',
+                    color: 'var(--brand-hex, #2563EB)',
                   }}
                 >
                   ROW-LEVEL
@@ -56,17 +56,26 @@ export function Architecture() {
                 <div
                   className="flex items-center justify-between gap-1.5 px-2 py-1 rounded-lg border transition-transform duration-200 group-hover:translate-x-0.5"
                   style={{
-                    backgroundColor: theme.lightBg,
-                    borderColor: theme.borderLight,
+                    backgroundColor: 'var(--brand-light, #EFF6FF)',
+                    borderColor: 'var(--brand-border, #BFDBFE)',
                   }}
                 >
                   <span className="inline-flex items-center gap-1.5 min-w-0">
-                    <Database className="w-3 h-3 shrink-0" style={{ color: theme.hex }} />
-                    <span className="font-mono text-[10px] font-bold truncate" style={{ color: theme.hex }}>
+                    <Database
+                      className="w-3 h-3 shrink-0"
+                      style={{ color: 'var(--brand-hex, #2563EB)' }}
+                    />
+                    <span
+                      className="font-mono text-[10px] font-bold truncate"
+                      style={{ color: 'var(--brand-hex, #2563EB)' }}
+                    >
                       SCH-DPA-01
                     </span>
                   </span>
-                  <span className="font-mono text-[9px] font-semibold shrink-0" style={{ color: theme.hex }}>
+                  <span
+                    className="font-mono text-[9px] font-semibold shrink-0"
+                    style={{ color: 'var(--brand-hex, #2563EB)' }}
+                  >
                     SCOPED
                   </span>
                 </div>
@@ -124,8 +133,8 @@ export function Architecture() {
                           <span
                             className="w-4 h-4 rounded flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
                             style={{
-                              backgroundColor: theme.lightBg,
-                              color: theme.hex,
+                              backgroundColor: 'var(--brand-light, #EFF6FF)',
+                              color: 'var(--brand-hex, #2563EB)',
                             }}
                           >
                             <Check className="w-2.5 h-2.5" strokeWidth={2.75} />
@@ -171,9 +180,9 @@ export function Architecture() {
                 <div
                   className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border min-w-0 flex-1 transition-colors"
                   style={{
-                    backgroundColor: theme.lightBg,
-                    borderColor: theme.borderLight,
-                    color: theme.hex,
+                    backgroundColor: 'var(--brand-light, #EFF6FF)',
+                    borderColor: 'var(--brand-border, #BFDBFE)',
+                    color: 'var(--brand-hex, #2563EB)',
                   }}
                 >
                   <Database className="w-3.5 h-3.5 shrink-0" />
@@ -213,9 +222,9 @@ export function Architecture() {
                 <span
                   className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded border shrink-0 transition-colors"
                   style={{
-                    backgroundColor: theme.lightBg,
-                    borderColor: theme.borderLight,
-                    color: theme.hex,
+                    backgroundColor: 'var(--brand-light, #EFF6FF)',
+                    borderColor: 'var(--brand-border, #BFDBFE)',
+                    color: 'var(--brand-hex, #2563EB)',
                   }}
                 >
                   1-CLICK
@@ -234,13 +243,19 @@ export function Architecture() {
                 <div
                   className="p-2 rounded-lg border flex flex-col gap-0.5 transition-transform duration-200 group-hover:-translate-y-0.5"
                   style={{
-                    backgroundColor: theme.lightBg,
-                    borderColor: theme.borderLight,
+                    backgroundColor: 'var(--brand-light, #EFF6FF)',
+                    borderColor: 'var(--brand-border, #BFDBFE)',
                   }}
                 >
                   <div className="flex items-center gap-1">
-                    <FileSpreadsheet className="w-3.5 h-3.5 shrink-0" style={{ color: theme.hex }} />
-                    <span className="font-mono text-[10px] font-bold" style={{ color: theme.hex }}>
+                    <FileSpreadsheet
+                      className="w-3.5 h-3.5 shrink-0"
+                      style={{ color: 'var(--brand-hex, #2563EB)' }}
+                    />
+                    <span
+                      className="font-mono text-[10px] font-bold"
+                      style={{ color: 'var(--brand-hex, #2563EB)' }}
+                    >
                       .XLSX
                     </span>
                   </div>
@@ -252,7 +267,7 @@ export function Architecture() {
                 <span className="inline-flex items-center gap-1.5 font-medium text-slate-700 truncate">
                   <Download
                     className="w-3 h-3 shrink-0 transition-transform duration-200 group-hover:translate-y-0.5"
-                    style={{ color: theme.hex }}
+                    style={{ color: 'var(--brand-hex, #2563EB)' }}
                   />
                   Ready to export
                 </span>

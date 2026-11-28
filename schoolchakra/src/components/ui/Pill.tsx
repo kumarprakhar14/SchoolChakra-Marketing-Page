@@ -1,5 +1,4 @@
 import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from 'react';
-import { useTheme } from '../../contexts';
 
 interface PillProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   active?: boolean;
@@ -21,8 +20,6 @@ export function Pill({
   onClick,
   ...props
 }: PillProps) {
-  const { theme } = useTheme();
-
   const baseStyles = `
     inline-flex items-center gap-1.5 font-medium rounded-full border
     transition-all duration-200 cursor-pointer
@@ -36,13 +33,18 @@ export function Pill({
   };
 
   const colorMap = {
-    theme: { hex: theme.hex, light: theme.lightBg, border: theme.borderLight },
-    slate: { hex: '#64748B', light: '#F1F5F9', border: '#E2E8F0' },
-    emerald: { hex: '#059669', light: '#ECFDF5', border: '#A7F3D0' },
-    blue: { hex: '#2563EB', light: '#EFF6FF', border: '#BFDBFE' },
-    amber: { hex: '#D97706', light: '#FFF8E1', border: '#FDE68A' },
-    rose: { hex: '#E11D48', light: '#FFF1F2', border: '#FECDD3' },
-    violet: { hex: '#7C3AED', light: '#F5F3FF', border: '#DDD6FE' },
+    theme: {
+      hex: 'var(--brand-hex, #2563EB)',
+      light: 'var(--brand-light, #EFF6FF)',
+      border: 'var(--brand-border, #BFDBFE)',
+      ring: 'var(--brand-ring, #2563EB45)',
+    },
+    slate: { hex: '#64748B', light: '#F1F5F9', border: '#E2E8F0', ring: '#64748B45' },
+    emerald: { hex: '#059669', light: '#ECFDF5', border: '#A7F3D0', ring: '#05966945' },
+    blue: { hex: '#2563EB', light: '#EFF6FF', border: '#BFDBFE', ring: '#2563EB45' },
+    amber: { hex: '#D97706', light: '#FFF8E1', border: '#FDE68A', ring: '#D9770645' },
+    rose: { hex: '#E11D48', light: '#FFF1F2', border: '#FECDD3', ring: '#E11D4845' },
+    violet: { hex: '#7C3AED', light: '#F5F3FF', border: '#DDD6FE', ring: '#7C3AED45' },
   };
 
   const selectedColor = colorMap[color];
@@ -57,7 +59,7 @@ export function Pill({
     backgroundStyle = { backgroundColor: selectedColor.hex };
     colorStyle = { color: '#ffffff' };
     borderStyle = { borderColor: 'transparent' };
-    ringStyle = { boxShadow: `0 0 0 2px ${selectedColor.hex}45` };
+    ringStyle = { boxShadow: `0 0 0 2px ${selectedColor.ring}` };
   } else {
     backgroundStyle = { backgroundColor: selectedColor.light };
     borderStyle = { borderColor: selectedColor.border };
@@ -93,10 +95,12 @@ export function SegmentedControl({
   className = '',
   color = 'theme',
 }: SegmentedControlProps) {
-  const { theme } = useTheme();
-
   const colorMap = {
-    theme: { hex: theme.hex, light: theme.lightBg, border: theme.borderLight },
+    theme: {
+      hex: 'var(--brand-hex, #2563EB)',
+      light: 'var(--brand-light, #EFF6FF)',
+      border: 'var(--brand-border, #BFDBFE)',
+    },
     slate: { hex: '#64748B', light: '#F1F5F9', border: '#E2E8F0' },
   };
 

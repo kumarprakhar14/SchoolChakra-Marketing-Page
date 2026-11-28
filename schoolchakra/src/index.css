@@ -1,9 +1,19 @@
 @import "tailwindcss";
 
+:root {
+  --brand-hex: #2563EB;
+  --brand-hover: #1D4ED8;
+  --brand-light: #EFF6FF;
+  --brand-border: #BFDBFE;
+  --brand-ring: #2563EB45;
+  --brand-shadow: #2563EB60;
+  --brand-glow: #2563EBD9;
+}
+
 @theme {
-  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
-  --font-serif: "Instrument Serif", Georgia, serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: var(--font-plus-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), "Instrument Serif", Georgia, serif;
+  --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", monospace;
 }
 
 @layer base {

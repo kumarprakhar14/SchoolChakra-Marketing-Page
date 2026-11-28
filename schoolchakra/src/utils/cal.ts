@@ -2,6 +2,7 @@
  * Cal.com Embed Integration & Controller for SchoolChakra
  * Provides modal initialization, dynamic theme branding, and booking / reschedule event listeners.
  */
+import { ENV } from '../config/env';
 
 export interface CalBookingDetails {
   date?: string;
@@ -10,20 +11,63 @@ export interface CalBookingDetails {
   confirmedDateText?: string;
   isReschedule: boolean;
   eventType?: string;
-  rawEvent?: any;
+  rawEvent?: Record<string, unknown>;
+}
+
+interface CalEventDetail {
+  type?: string;
+  startTime?: string;
+  date?: string;
+  uid?: string;
+  bookingId?: string;
+  rescheduleUid?: string;
+  isReschedule?: boolean;
+  booking?: {
+    startTime?: string;
+    date?: string;
+    uid?: string;
+    rescheduledFromUid?: string;
+  };
+  data?: CalEventDetail;
+}
+
+interface CalEventPayload {
+  type?: string;
+  action?: string;
+  detail?: CalEventDetail;
+  data?: CalEventDetail;
+}
+
+interface CalCallable {
+  (...args: unknown[]): void;
+  loaded?: boolean;
+  ns?: Record<string, CalQueueFn>;
+  q?: unknown[];
+}
+
+interface CalQueueFn {
+  (...args: unknown[]): void;
+  q?: unknown[];
 }
 
 declare global {
   interface Window {
-    Cal?: any;
+    Cal?: CalCallable;
   }
 }
+
+const CAL_ORIGIN = 'https://app.cal.com';
+
+let activeBookingCallback: ((details: CalBookingDetails) => void) | undefined;
+let calListenersRegistered = false;
+let activeWindowMessageListener: ((e: MessageEvent) => void) | null = null;
 
 /**
  * Parses Cal.com event payloads across v1, v2, and postMessage variants.
  */
-function parseCalEvent(event: any, explicitAction?: string): CalBookingDetails {
-  const detail = event?.detail?.data || event?.detail || event?.data || {};
+function parseCalEvent(event: CalEventPayload | null | undefined, explicitAction?: string): CalBookingDetails {
+  const detail: CalEventDetail =
+    event?.detail?.data || event?.detail || event?.data || {};
   const actionType =
     explicitAction ||
     event?.detail?.type ||
@@ -68,7 +112,7 @@ function parseCalEvent(event: any, explicitAction?: string): CalBookingDetails {
     confirmedDateText: confirmedText,
     isReschedule,
     eventType: actionType,
-    rawEvent: detail,
+    rawEvent: detail as unknown as Record<string, unknown>,
   };
 }
 
@@ -76,7 +120,7 @@ function parseCalEvent(event: any, explicitAction?: string): CalBookingDetails {
  * Loads the Cal.com embed script and returns the Cal instance.
  * Queues commands so it is safe to call immediately before script finish.
  */
-export async function getCalApi(): Promise<any> {
+export async function getCalApi(): Promise<CalCallable | null> {
   if (typeof window === 'undefined') return null;
 
   if (window.Cal) {
@@ -84,47 +128,115 @@ export async function getCalApi(): Promise<any> {
   }
 
   return new Promise((resolve) => {
-    (function (C: any, A: string, L: string) {
-      const p = function (a: any, ar: any) {
+    (function (C: Window, A: string, L: string) {
+      const p = function (a: { q?: unknown[] }, ar: IArguments | unknown[]) {
+        a.q = a.q || [];
         a.q.push(ar);
       };
       const d = C.document;
       C.Cal =
         C.Cal ||
-        function () {
-          const cal = C.Cal;
-          const ar = arguments;
+        function (...args: unknown[]) {
+          const cal = C.Cal!;
           if (!cal.loaded) {
             cal.ns = {};
             cal.q = cal.q || [];
             const s = d.createElement('script');
             s.src = A;
             s.async = true;
-            s.onload = () => resolve(C.Cal);
+            s.onload = () => resolve(C.Cal ?? null);
             d.head.appendChild(s);
             cal.loaded = true;
           }
-          if (ar[0] === L) {
-            const api: any = function () {
-              p(api, arguments);
+          if (args[0] === L) {
+            const api: CalQueueFn = function (...nsArgs: unknown[]) {
+              p(api, nsArgs);
             };
-            const namespace = ar[1];
+            const namespace = args[1];
             api.q = api.q || [];
-            if (typeof namespace === 'string') {
+            if (typeof namespace === 'string' && cal.ns) {
               cal.ns[namespace] = cal.ns[namespace] || api;
-              p(cal.ns[namespace], ar);
+              p(cal.ns[namespace], args);
               p(cal, ['initNamespace', namespace]);
             } else {
-              p(cal, ar);
+              p(cal, args);
             }
             return;
           }
-          p(cal, ar);
+          p(cal, args);
         };
-    })(window, 'https://app.cal.com/embed/embed.js', 'init');
+    })(window, `${CAL_ORIGIN}/embed/embed.js`, 'init');
 
-    resolve(window.Cal);
+    resolve(window.Cal ?? null);
   });
+}
+
+function registerCalListeners(cal: CalCallable) {
+  const dispatchEvent = (event: CalEventPayload, explicitAction?: string) => {
+    if (!activeBookingCallback) return;
+    const parsed = parseCalEvent(event, explicitAction);
+    if (parsed.date || parsed.bookingUid) {
+      activeBookingCallback(parsed);
+    }
+  };
+
+  if (!calListenersRegistered) {
+    calListenersRegistered = true;
+
+    const actions = [
+      'rescheduleBookingSuccessfulV2',
+      'rescheduleBookingSuccessful',
+      'bookingSuccessfulV2',
+      'bookingSuccessful',
+    ] as const;
+
+    for (const action of actions) {
+      cal('on', {
+        action,
+        callback: (event: CalEventPayload) => dispatchEvent(event, action),
+      });
+    }
+
+    cal('on', {
+      action: '*',
+      callback: (event: CalEventPayload) => {
+        const action = String(event?.detail?.type || event?.type || '');
+        if (
+          action.includes('bookingSuccessful') ||
+          action.includes('rescheduleBooking') ||
+          action.includes('bookingRescheduled')
+        ) {
+          dispatchEvent(event, action);
+        }
+      },
+    });
+  }
+
+  if (activeWindowMessageListener) {
+    window.removeEventListener('message', activeWindowMessageListener);
+  }
+
+  activeWindowMessageListener = (e: MessageEvent) => {
+    if (e.origin !== CAL_ORIGIN) return;
+    try {
+      const data: CalEventPayload =
+        typeof e.data === 'string' ? (JSON.parse(e.data) as CalEventPayload) : (e.data as CalEventPayload);
+      const msgType = String(data?.type || data?.action || '');
+      if (
+        msgType.includes('bookingSuccessful') ||
+        msgType.includes('rescheduleBooking') ||
+        msgType.includes('bookingRescheduled') ||
+        msgType.includes('CAL:bookingSuccessful') ||
+        msgType.includes('CAL:rescheduleBookingSuccessful')
+      ) {
+        dispatchEvent(data, msgType);
+      }
+    } catch {
+      // Ignore non-JSON or unrelated window messages
+    }
+  };
+
+  window.addEventListener('message', activeWindowMessageListener);
 }
 
 /**
@@ -153,13 +265,10 @@ export async function openCalModal({
   const cal = await getCalApi();
   if (!cal) return;
 
-  const targetLink =
-    calLink ||
-    (import.meta.env.VITE_CALCOM_LINK as string) ||
-    'schoolchakra/walkthrough';
+  const targetLink = calLink || ENV.calcomLink || 'schoolchakra/walkthrough';
 
   // 1. Initialize origin
-  cal('init', { origin: 'https://app.cal.com' });
+  cal('init', { origin: CAL_ORIGIN });
 
   // 2. Set theme and brand styling to match active school theme
   cal('ui', {
@@ -173,72 +282,10 @@ export async function openCalModal({
     layout: 'month_view',
   });
 
-  // 3. Register booking and reschedule listeners
+  // 3. Register / update booking and reschedule listeners without leaking
+  activeBookingCallback = onBookingOrReschedule;
   if (onBookingOrReschedule) {
-    const handleEvent = (event: any, explicitAction?: string) => {
-      const parsed = parseCalEvent(event, explicitAction);
-      if (parsed.date || parsed.bookingUid) {
-        onBookingOrReschedule(parsed);
-      }
-    };
-
-    // A. Cal.com Reschedule Actions (V2 & legacy)
-    cal('on', {
-      action: 'rescheduleBookingSuccessfulV2',
-      callback: (event: any) => handleEvent(event, 'rescheduleBookingSuccessfulV2'),
-    });
-
-    cal('on', {
-      action: 'rescheduleBookingSuccessful',
-      callback: (event: any) => handleEvent(event, 'rescheduleBookingSuccessful'),
-    });
-
-    // B. Cal.com New Booking Actions (V2 & legacy)
-    cal('on', {
-      action: 'bookingSuccessfulV2',
-      callback: (event: any) => handleEvent(event, 'bookingSuccessfulV2'),
-    });
-
-    cal('on', {
-      action: 'bookingSuccessful',
-      callback: (event: any) => handleEvent(event, 'bookingSuccessful'),
-    });
-
-    // C. Catch-all for any booking state transitions
-    cal('on', {
-      action: '*',
-      callback: (event: any) => {
-        const action = event?.detail?.type || event?.type || '';
-        if (
-          String(action).includes('bookingSuccessful') ||
-          String(action).includes('rescheduleBooking') ||
-          String(action).includes('bookingRescheduled')
-        ) {
-          handleEvent(event, action);
-        }
-      },
-    });
-
-    // D. Cross-origin window message listener for iframe postMessages
-    const handleWindowMessage = (e: MessageEvent) => {
-      try {
-        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-        const msgType = String(data?.type || data?.action || '');
-        if (
-          msgType.includes('bookingSuccessful') ||
-          msgType.includes('rescheduleBooking') ||
-          msgType.includes('bookingRescheduled') ||
-          msgType.includes('CAL:bookingSuccessful') ||
-          msgType.includes('CAL:rescheduleBookingSuccessful')
-        ) {
-          handleEvent(data, msgType);
-        }
-      } catch {
-        // Ignore non-json or unrelated window messages
-      }
-    };
-
-    window.addEventListener('message', handleWindowMessage);
+    registerCalListeners(cal);
   }
 
   // 4. Open modal with pre-filled school parameters
@@ -251,7 +298,9 @@ export async function openCalModal({
       name: contactName || schoolName || 'School Administrator',
       email: isEmail ? contact : undefined,
       phone: isPhone ? contact : undefined,
-      notes: `School: ${schoolName || ''} | Board: ${board || 'CBSE'}${studentStrength ? ` | Students: ${studentStrength}` : ''}`,
+      notes: `School: ${schoolName || ''} | Board: ${board || 'CBSE'}${
+        studentStrength ? ` | Students: ${studentStrength}` : ''
+      }`,
     },
   });
 }

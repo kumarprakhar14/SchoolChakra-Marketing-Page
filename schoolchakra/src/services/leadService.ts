@@ -2,6 +2,7 @@
  * Lead & Google Sheets Service for SchoolChakra
  * Handles recording founding pilot applications and Cal.com booking events to Google Sheets.
  */
+import { ENV } from '../config/env';
 
 export interface LeadSubmissionPayload {
   submissionId?: string;
@@ -25,12 +26,12 @@ export interface CalBookingPayload {
   isReschedule?: boolean;
 }
 
-export interface ServiceResult {
+export interface ServiceResult<T = unknown> {
   success: boolean;
   submissionId: string;
   message: string;
   deliveredRemotely?: boolean;
-  data?: any;
+  data?: T;
 }
 
 export interface ContactEnquiryPayload {
@@ -42,6 +43,12 @@ export interface ContactEnquiryPayload {
   studentStrength?: string;
   topic: string;
   notes?: string;
+}
+
+interface StoredLeadEntry extends Record<string, unknown> {
+  submissionId: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 const LOCAL_STORAGE_KEY = 'schoolchakra_pilot_leads';
@@ -57,11 +64,12 @@ export function generateSubmissionId(): string {
 /**
  * Saves or updates a lead submission in localStorage for offline reliability and audit trails.
  */
-function saveLeadToLocalStorage(entry: Record<string, any>) {
+function saveLeadToLocalStorage(entry: StoredLeadEntry) {
+  if (typeof window === 'undefined') return;
   try {
     const existingRaw = localStorage.getItem(LOCAL_STORAGE_KEY);
-    const existing = existingRaw ? JSON.parse(existingRaw) : [];
-    const index = existing.findIndex((item: any) => item.submissionId === entry.submissionId);
+    const existing: StoredLeadEntry[] = existingRaw ? (JSON.parse(existingRaw) as StoredLeadEntry[]) : [];
+    const index = existing.findIndex((item) => item.submissionId === entry.submissionId);
     if (index >= 0) {
       existing[index] = { ...existing[index], ...entry, updatedAt: new Date().toISOString() };
     } else {
@@ -73,6 +81,14 @@ function saveLeadToLocalStorage(entry: Record<string, any>) {
   }
 }
 
+function isConfiguredWebhook(webhookUrl: string): boolean {
+  return Boolean(
+    webhookUrl &&
+      webhookUrl.trim() !== '' &&
+      !webhookUrl.includes('YOUR_DEPLOYMENT_ID')
+  );
+}
+
 /**
  * 1. Log New Pilot Lead to Google Sheets
  */
@@ -82,7 +98,7 @@ export async function submitLeadToGoogleSheets(
   const submissionId = payload.submissionId || generateSubmissionId();
   const timestamp = new Date().toISOString();
 
-  const record = {
+  const record: StoredLeadEntry = {
     action: 'CREATE_LEAD',
     submissionId,
     timestamp,
@@ -101,13 +117,9 @@ export async function submitLeadToGoogleSheets(
   // Always persist locally first
   saveLeadToLocalStorage(record);
 
-  const webhookUrl = import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL as string | undefined;
-  const spreadsheetId = import.meta.env.VITE_GOOGLE_SHEETS_SPREADSHEET_ID as string | undefined;
-  const apiKey = import.meta.env.VITE_GOOGLE_SHEETS_API_KEY as string | undefined;
-  const accessToken = import.meta.env.VITE_GOOGLE_SHEETS_ACCESS_TOKEN as string | undefined;
+  const webhookUrl = ENV.googleSheetsWebhookUrl;
 
-  // Pattern A: Google Apps Script Web App Webhook (Recommended & Standard for Jamstack)
-  if (webhookUrl && webhookUrl.trim() !== '') {
+  if (isConfiguredWebhook(webhookUrl)) {
     try {
       // Using text/plain payload to prevent CORS preflight blocks with Google Apps Script
       await fetch(webhookUrl, {
@@ -130,6 +142,7 @@ export async function submitLeadToGoogleSheets(
 
       return {
         success: true,
+        deliveredRemotely: true,
         submissionId,
         message: 'Lead logged successfully to Google Sheets.',
       };
@@ -137,62 +150,18 @@ export async function submitLeadToGoogleSheets(
       console.warn('[SchoolChakra] Google Sheets Webhook warning:', err);
       return {
         success: true,
+        deliveredRemotely: false,
         submissionId,
         message: 'Lead captured (stored locally & queued for sync).',
       };
     }
   }
 
-  // Pattern B: Direct Google Sheets API v4 (Append Row)
-  if (spreadsheetId && (accessToken || apiKey)) {
-    try {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A:K:append?valueInputOption=USER_ENTERED${
-        apiKey ? `&key=${apiKey}` : ''
-      }`;
-
-      const rowValues = [
-        submissionId,
-        timestamp,
-        payload.schoolName,
-        payload.board,
-        payload.studentStrength,
-        payload.legacySystem,
-        payload.contact,
-        payload.theme,
-        'Lead Captured',
-        'Pending Scheduling',
-        '',
-      ];
-
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-      };
-      if (accessToken) {
-        headers.Authorization = `Bearer ${accessToken}`;
-      }
-
-      await fetch(url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          values: [rowValues],
-        }),
-      });
-
-      return {
-        success: true,
-        submissionId,
-        message: 'Lead appended to Google Sheet via Sheets API v4.',
-      };
-    } catch (err) {
-      console.warn('[SchoolChakra] Direct Sheets API v4 error:', err);
-    }
-  }
-
-  // Pattern C: Simulation / Local Demo Mode (when env vars are pending)
+  // Simulation / Local Demo Mode (when webhook env var is not configured)
   console.info('[SchoolChakra Demo Mode] Lead stored locally with ID:', submissionId, record);
   return {
     success: true,
+    deliveredRemotely: false,
     submissionId,
     message: 'Lead logged successfully (Demo Mode / Local Storage).',
   };
@@ -210,7 +179,7 @@ export async function logCalBookingToGoogleSheets(
   const action = isReschedule ? 'LOG_CALCOM_RESCHEDULE' : 'LOG_CALCOM_BOOKING';
   const status = isReschedule ? 'Walkthrough Rescheduled' : 'Walkthrough Scheduled';
 
-  const updateRecord = {
+  const updateRecord: StoredLeadEntry = {
     action,
     isReschedule,
     submissionId: payload.submissionId,
@@ -224,16 +193,11 @@ export async function logCalBookingToGoogleSheets(
     calBookingUid: payload.calBookingUid || '',
   };
 
-  // Update in localStorage
   saveLeadToLocalStorage(updateRecord);
 
-  const webhookUrl = import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL as string | undefined;
-  const spreadsheetId = import.meta.env.VITE_GOOGLE_SHEETS_SPREADSHEET_ID as string | undefined;
-  const apiKey = import.meta.env.VITE_GOOGLE_SHEETS_API_KEY as string | undefined;
-  const accessToken = import.meta.env.VITE_GOOGLE_SHEETS_ACCESS_TOKEN as string | undefined;
+  const webhookUrl = ENV.googleSheetsWebhookUrl;
 
-  // Pattern A: Webhook update (handles initial booking & rescheduling)
-  if (webhookUrl && webhookUrl.trim() !== '') {
+  if (isConfiguredWebhook(webhookUrl)) {
     try {
       await fetch(webhookUrl, {
         method: 'POST',
@@ -254,6 +218,7 @@ export async function logCalBookingToGoogleSheets(
 
       return {
         success: true,
+        deliveredRemotely: true,
         submissionId: payload.submissionId,
         message: isReschedule
           ? 'Cal.com reschedule synchronized to Google Sheets.'
@@ -264,57 +229,10 @@ export async function logCalBookingToGoogleSheets(
     }
   }
 
-  // Pattern B: Direct Google Sheets API v4 (Append appointment log)
-  if (spreadsheetId && (accessToken || apiKey)) {
-    try {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A:K:append?valueInputOption=USER_ENTERED${
-        apiKey ? `&key=${apiKey}` : ''
-      }`;
-
-      const rowValues = [
-        payload.submissionId,
-        timestamp,
-        payload.schoolName || '',
-        payload.board || '',
-        '',
-        '',
-        payload.contact || '',
-        '',
-        status,
-        payload.scheduledDate,
-        payload.calBookingUid || '',
-      ];
-
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-      };
-      if (accessToken) {
-        headers.Authorization = `Bearer ${accessToken}`;
-      }
-
-      await fetch(url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          values: [rowValues],
-        }),
-      });
-
-      return {
-        success: true,
-        submissionId: payload.submissionId,
-        message: isReschedule
-          ? 'Cal.com reschedule appended to Google Sheets via API v4.'
-          : 'Cal.com appointment appended to Google Sheets via API v4.',
-      };
-    } catch (err) {
-      console.warn('[SchoolChakra] Direct Sheets API v4 booking sync error:', err);
-    }
-  }
-
   console.info('[SchoolChakra Demo Mode] Cal.com event recorded:', updateRecord);
   return {
     success: true,
+    deliveredRemotely: false,
     submissionId: payload.submissionId,
     message: isReschedule ? 'Reschedule event logged locally.' : 'Booking event logged locally.',
   };
@@ -329,7 +247,7 @@ export async function submitContactEnquiry(
   const submissionId = generateSubmissionId().replace('SC-PILOT-', 'SC-ENQ-');
   const timestamp = new Date().toISOString();
 
-  const record = {
+  const record: StoredLeadEntry = {
     action: 'CREATE_CONTACT_ENQUIRY',
     submissionId,
     timestamp,
@@ -347,13 +265,9 @@ export async function submitContactEnquiry(
 
   saveLeadToLocalStorage(record);
 
-  const webhookUrl = import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL as string | undefined;
-  const isPlaceholderWebhook =
-    !webhookUrl ||
-    webhookUrl.trim() === '' ||
-    webhookUrl.includes('YOUR_DEPLOYMENT_ID');
+  const webhookUrl = ENV.googleSheetsWebhookUrl;
 
-  if (!isPlaceholderWebhook) {
+  if (isConfiguredWebhook(webhookUrl)) {
     try {
       const response = await fetch(webhookUrl, {
         method: 'POST',
@@ -401,4 +315,3 @@ export async function submitContactEnquiry(
       'Remote delivery could not be confirmed from this browser. Your enquiry details are saved locally—please connect directly via WhatsApp or the walkthrough scheduler below.',
   };
 }
-

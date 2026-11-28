@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, type ReactNode } from 'react';
 import type { BrandThemeKey, SchoolTenant } from '../../types';
 import { SCHOOL_TENANTS, getDefaultTenant } from '../../constants';

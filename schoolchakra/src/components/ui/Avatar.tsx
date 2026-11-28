@@ -1,5 +1,6 @@
+'use client';
+
 import { Children, type HTMLAttributes, type ReactNode } from 'react';
-import { useTheme } from '../../contexts';
 import { getInitials } from '../../utils';
 
 interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
@@ -24,8 +25,6 @@ export function Avatar({
   style,
   ...props
 }: AvatarProps) {
-  const { theme } = useTheme();
-
   const sizeStyles = {
     xs: 'w-6 h-6 text-xs',
     sm: 'w-8 h-8 text-sm',
@@ -69,7 +68,7 @@ export function Avatar({
 
   const initials = fallback ? getInitials(fallback) : '?';
 
-  const backgroundStyle = src ? {} : { backgroundColor: theme.hex };
+  const backgroundStyle = src ? {} : { backgroundColor: 'var(--brand-hex, #2563EB)' };
 
   return (
     <div

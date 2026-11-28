@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import {
   FileSpreadsheet,
@@ -44,9 +46,9 @@ export const ImportView: React.FC<ImportViewProps> = ({ theme }) => {
           <FileSpreadsheet className="w-4 h-4 sm:w-5 sm:h-5" />
         </div>
         <div>
-          <h1 className="text-base sm:text-xl font-bold text-gray-900 tracking-tight">
+          <h2 className="text-base sm:text-xl font-bold text-gray-900 tracking-tight">
             Bulk Data Import
-          </h1>
+          </h2>
           <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">
             Onboard new data into SchoolChakra via Excel (.xlsx) or CSV files.
           </p>
@@ -91,9 +93,9 @@ export const ImportView: React.FC<ImportViewProps> = ({ theme }) => {
         <div className="p-4 sm:p-6 lg:p-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5 sm:mb-6">
             <div>
-              <h2 className="text-sm sm:text-lg font-bold text-gray-900">
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900">
                 Import {currentTabLabel}
-              </h2>
+              </h3>
               <p className="text-gray-500 text-[11px] sm:text-sm mt-0.5">
                 Import {currentTabLabel.toLowerCase()} records and map them to classes/sections.
               </p>
@@ -182,9 +184,9 @@ export const ImportView: React.FC<ImportViewProps> = ({ theme }) => {
               <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-xs sm:text-sm font-bold text-emerald-900 mb-0.5">
+              <h4 className="text-xs sm:text-sm font-bold text-emerald-900 mb-0.5">
                 Previous Import Successful
-              </h3>
+              </h4>
               <p className="text-emerald-700 text-[11px] sm:text-xs mb-3">
                 All records were saved safely to the database.
               </p>

@@ -1,7 +1,10 @@
+'use client';
+
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTheme } from '../../contexts';
+import { usePrefersReducedMotion } from '../../hooks';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,19 +20,13 @@ export function SchoolChakraHub({
   viewBox = '35 75 570 405',
 }: SchoolChakraHubProps) {
   const { theme } = useTheme();
+  const prefersReducedMotion = usePrefersReducedMotion();
   const svgRef = useRef<SVGSVGElement>(null);
-  const [animStatus, setAnimStatus] = useState<'idle' | 'playing' | 'done'>(() => {
-    if (typeof window !== 'undefined') {
-      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-      if (mediaQuery.matches) {
-        return 'done';
-      }
-    }
-    return 'idle';
-  });
+  const [animStatus, setAnimStatus] = useState<'idle' | 'playing' | 'done'>('idle');
+  const effectiveStatus = prefersReducedMotion ? 'done' : animStatus;
 
   useEffect(() => {
-    if (animStatus === 'done') return;
+    if (effectiveStatus === 'done') return;
 
     const el = svgRef.current;
     if (!el) return;
@@ -50,21 +47,21 @@ export function SchoolChakraHub({
     return () => {
       trigger.kill();
     };
-  }, [animStatus]);
+  }, [effectiveStatus]);
 
   useEffect(() => {
-    if (animStatus === 'playing') {
+    if (effectiveStatus === 'playing') {
       const timer = setTimeout(() => {
         setAnimStatus('done');
       }, 12000);
       return () => clearTimeout(timer);
     }
-  }, [animStatus]);
+  }, [effectiveStatus]);
 
   const stateClass =
-    animStatus === 'idle'
+    effectiveStatus === 'idle'
       ? 'sc-state-idle'
-      : animStatus === 'playing'
+      : effectiveStatus === 'playing'
       ? 'sc-state-playing'
       : 'sc-state-done';
 

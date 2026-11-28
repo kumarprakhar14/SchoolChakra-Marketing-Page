@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
 import type { DemoSchool, DemoTheme, DemoChecklistItem } from '../types';
@@ -40,9 +42,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ school, theme }) =
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2.5 sm:gap-2">
         <div>
-          <h1 className="text-base sm:text-xl font-black text-gray-900 tracking-tight">
+          <h2 className="text-base sm:text-xl font-black text-gray-900 tracking-tight">
             School Admin Operational Dashboard
-          </h1>
+          </h2>
           <p className="text-[11px] sm:text-xs text-gray-400 mt-0.5">
             <span className="font-mono text-gray-500 font-semibold">RBAC: SCHOOL_ADMIN</span> ·
             Real-time attendance & fee status
@@ -83,7 +85,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ school, theme }) =
             Total Enrolled
           </span>
           <div className="mt-1 sm:mt-1.5 text-xl sm:text-2xl font-black text-slate-900 font-mono">
-            {school.students.toLocaleString()}
+            {school.students.toLocaleString('en-IN')}
           </div>
           <div
             className="text-xs font-semibold mt-1 transition-colors truncate"

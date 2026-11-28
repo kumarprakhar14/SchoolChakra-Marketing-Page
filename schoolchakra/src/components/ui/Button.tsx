@@ -1,5 +1,4 @@
 import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from 'react';
-import { useTheme } from '../../contexts';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success';
@@ -24,8 +23,6 @@ export function Button({
   style,
   ...props
 }: ButtonProps) {
-  const { theme } = useTheme();
-
   const baseStyles = `
     inline-flex items-center justify-center font-semibold rounded-full
     transition-all duration-200 cursor-pointer
@@ -59,15 +56,21 @@ export function Button({
   let ringStyle: CSSProperties = {};
 
   if (variant === 'primary' || variant === 'secondary') {
-    backgroundStyle = { backgroundColor: theme.hex };
-    ringStyle = { boxShadow: `0 0 0 2px ${theme.hex}45` };
+    backgroundStyle = { backgroundColor: 'var(--brand-hex, #2563EB)' };
+    ringStyle = { boxShadow: '0 0 0 2px var(--brand-ring, #2563EB45)' };
   } else if (variant === 'outline') {
-    backgroundStyle = { backgroundColor: theme.lightBg };
-    borderStyle = { borderColor: theme.borderLight, color: theme.hex };
-    ringStyle = { boxShadow: `0 0 0 2px ${theme.hex}45` };
+    backgroundStyle = { backgroundColor: 'var(--brand-light, #EFF6FF)' };
+    borderStyle = {
+      borderColor: 'var(--brand-border, #BFDBFE)',
+      color: 'var(--brand-hex, #2563EB)',
+    };
+    ringStyle = { boxShadow: '0 0 0 2px var(--brand-ring, #2563EB45)' };
   } else if (variant === 'ghost') {
-    backgroundStyle = { backgroundColor: theme.lightBg };
-    borderStyle = { borderColor: theme.borderLight, color: theme.hex };
+    backgroundStyle = { backgroundColor: 'var(--brand-light, #EFF6FF)' };
+    borderStyle = {
+      borderColor: 'var(--brand-border, #BFDBFE)',
+      color: 'var(--brand-hex, #2563EB)',
+    };
   } else if (variant === 'danger') {
     backgroundStyle = { backgroundColor: '#E11D48' };
     ringStyle = { boxShadow: '0 0 0 2px #E11D4845' };
